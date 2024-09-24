@@ -18,16 +18,7 @@ fn main() {
     let start = std::time::Instant::now();
 
     pairs.into_iter().for_each(|pair| {
-        // TODO fix
-        println!(
-            "Blake3 for {} elements of size {}",
-            pair.len(),
-            std::mem::size_of::<GF>()
-        );
-        let start = std::time::Instant::now();
         hasher.hash_iter(pair);
-        let elapsed = start.elapsed();
-        println!("   time: {:?}", elapsed);
     });
 
     let elapsed = start.elapsed();

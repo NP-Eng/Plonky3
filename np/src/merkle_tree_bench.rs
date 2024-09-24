@@ -4,14 +4,12 @@ use std::time::Instant;
 
 use common::*;
 use p3_blake3::Blake3;
-use p3_commit::Mmcs;
 use p3_field::{Field, PackedField, PackedValue};
 use p3_goldilocks::{DiffusionMatrixGoldilocks, Goldilocks};
 use p3_keccak::Keccak256Hash;
 use p3_matrix::dense::RowMajorMatrix;
-use p3_matrix::Matrix;
 use p3_mds::integrated_coset_mds::IntegratedCosetMds;
-use p3_merkle_tree::{MerkleTree, MerkleTreeMmcs};
+use p3_merkle_tree::MerkleTree;
 use p3_poseidon2::{Poseidon2, Poseidon2ExternalMatrixGeneral};
 use p3_rescue::{BasicSboxLayer, Rescue};
 use p3_symmetric::{
@@ -105,31 +103,17 @@ where
     [PW::Value; DIGEST_ELEMS]: Serialize + DeserializeOwned,
     Standard: Distribution<P::Scalar>,
 {
-    // let leaves = vec![RowMajorMatrix::<P::Scalar>::rand(&mut thread_rng(), 1, 1); 1 << LEVEL_N];
     let leaves = vec![RowMajorMatrix::<P::Scalar>::rand(
         &mut thread_rng(),
         1 << LEVEL_N,
         1,
     )];
 
-    // println!(
-    //     "MerkleTree::<{}, {}>::new",
-    //     type_name::<H>(),
-    //     type_name::<C>()
-    // );
-
     let start = Instant::now();
+    MerkleTree::new::<P, PW, H, C>(&h, &c, leaves);
+    let elapsed = start.elapsed();
 
-    let tree = MerkleTree::new::<P, PW, H, C>(&h, &c, leaves);
-
-    //println!("Root: {}", tree.root());
-
-    println!("N leaves: {}", tree.leaves.len());
-    for (i, l) in tree.digest_layers.iter().enumerate() {
-        println!("Layer {}, len = {}", i, l.len());
-    }
-
-    println!("Merkle tree built in {:?}", start.elapsed());
+    println!("Merkle tree built in {:?}", elapsed);
 }
 
 fn main() {

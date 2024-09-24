@@ -1,6 +1,7 @@
 use std::time::Duration;
 
 pub(crate) const N_PAIRS: usize = 2 << 2;
+pub(crate) const N_ITERS: usize = 2 << 13;
 
 const VERBOSE: bool = true;
 

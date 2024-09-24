@@ -1,10 +1,10 @@
 use p3_goldilocks::Goldilocks;
 use p3_keccak::Keccak256Hash;
-use p3_symmetric::{CryptographicHasher, SerializingHasher64};
+use p3_symmetric::{CompressionFunctionFromHasher, CryptographicHasher, SerializingHasher64};
 
 #[path = "../common.rs"]
 mod common;
-use common::N_PAIRS;
+use common::N_ITERS;
 
 type GF = Goldilocks;
 type ByteHash = Keccak256Hash;
@@ -14,27 +14,38 @@ fn main() {
     let byte_hash = ByteHash {};
     let hasher = FieldHash::new(byte_hash);
 
-    let pairs: Vec<Vec<GF>> = vec![vec![rand::random::<GF>(), rand::random::<GF>()]; N_PAIRS];
+    let field_els: Vec<Vec<GF>> = vec![vec![rand::random::<GF>()]; N_ITERS];
 
     let start = std::time::Instant::now();
 
-    pairs.into_iter().for_each(|pair| {
-        println!(
-            "Blake3 for {} elements of size {}",
-            pair.len(),
-            std::mem::size_of::<GF>()
-        );
-        let start = std::time::Instant::now();
-        hasher.hash_iter(pair);
-        let elapsed = start.elapsed();
-        println!("   time: {:?}", elapsed);
+    field_els.into_iter().for_each(|e| {
+        hasher.hash_iter(e);
     });
 
     let elapsed = start.elapsed();
 
-    println!("Two-to-one Keccak hash");
-    println!("Goldilocks field");
-    println!("{N_PAIRS} pairs");
+    println!("Keccak Goldilocks (64 bits) bits to 256 bits");
+    println!("{N_ITERS} inputs");
     println!("Time: {:?}", elapsed);
-    println!("Time per iteration: {:?}", elapsed / N_PAIRS as u32);
+    println!("Time per element: {:?}", elapsed / N_ITERS as u32);
+
+    let field_pairs: Vec<(GF, GF)> = vec![(rand::random::<GF>(), rand::random::<GF>()); N_ITERS];
+
+    let digest_pairs: Vec<Vec<[u8; 32]>> = field_pairs
+        .into_iter()
+        .map(|pair| vec![hasher.hash_iter([pair.0]), hasher.hash_iter([pair.1])])
+        .collect();
+
+    let start = std::time::Instant::now();
+
+    digest_pairs.into_iter().for_each(|pair| {
+        byte_hash.hash_iter(pair.concat());
+    });
+
+    let elapsed = start.elapsed();
+
+    println!("Keccak 512 bits to 256 bits");
+    println!("{N_ITERS} inputs");
+    println!("Time: {:?}", elapsed);
+    println!("Time per iteration: {:?}", elapsed / N_ITERS as u32);
 }

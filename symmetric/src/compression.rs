@@ -73,22 +73,7 @@ where
     H: CryptographicHasher<T, [T; CHUNK]>,
 {
     fn compress(&self, input: [[T; CHUNK]; N]) -> [T; CHUNK] {
-        // TODO remove
-        log::debug!(
-            " ! Called compress on {} elements of size {}",
-            input.len(),
-            std::mem::size_of::<T>() * CHUNK
-        );
-
-        let start = std::time::Instant::now();
-
-        let output = self.hasher.hash_iter(input.into_iter().flatten());
-
-        let elapsed = start.elapsed();
-
-        log::debug!(" ! Compress took {:?}", elapsed);
-
-        output
+        self.hasher.hash_iter(input.into_iter().flatten())
     }
 }
 

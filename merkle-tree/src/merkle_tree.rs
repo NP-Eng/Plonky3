@@ -153,13 +153,6 @@ where
         digests[i] = h.hash_iter(tallest_matrices.iter().flat_map(|m| m.row(i)));
     }
 
-    // TODO remove
-    println!("digests.len() = {}", digests.len());
-    println!(
-        "size of each digest: {}",
-        std::mem::size_of_val(&digests[0])
-    );
-
     // Everything has been initialized so we can safely cast.
     digests
 }

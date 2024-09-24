@@ -1,7 +1,6 @@
 //! A framework for symmetric cryptography primitives.
 
-// TODO reintroduce NP
-// #![no_std]
+#![no_std]
 
 extern crate alloc;
 
