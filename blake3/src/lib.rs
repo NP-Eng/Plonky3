@@ -1,6 +1,7 @@
 //! The blake3 hash function.
 
-#![no_std]
+// TODO reintroduce NP
+// #![no_std]
 
 use p3_symmetric::CryptographicHasher;
 
@@ -13,11 +14,20 @@ impl CryptographicHasher<u8, [u8; 32]> for Blake3 {
     where
         I: IntoIterator<Item = u8>,
     {
+        // TODO clean up
+
+        let mut count = 0;
+
         const BUFLEN: usize = 512; // Tweakable parameter; determined by experiment
         let mut hasher = blake3::Hasher::new();
         p3_util::apply_to_chunks::<BUFLEN, _, _>(input, |buf| {
+            count += buf.len();
             hasher.update(buf);
         });
+
+        // TODO remove
+        println!("blake3 hash inner for {} bytes", count);
+
         hasher.finalize().into()
     }
 

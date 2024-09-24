@@ -1,0 +1,42 @@
+[package]
+name = "np"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+p3-blake3 = { path = "../blake3" }
+p3-commit = { path = "../commit" }
+p3-field = { path = "../field" }
+p3-goldilocks = { path = "../goldilocks" }
+p3-keccak = { path = "../keccak" }
+p3-merkle-tree = { path = "../merkle-tree" }
+p3-poseidon2 = { path = "../poseidon2" }
+p3-rescue = { path = "../rescue" }
+p3-symmetric = { path = "../symmetric" }
+p3-mds = { path = "../mds" }
+p3-matrix = { path = "../matrix" }
+log = { version = "0.4.14", default-features = false }
+env_logger = { version = "0.11.5", default-features = false }
+rand = "0.8.5"
+serde = { version = "1.0", default-features = false, features = ["alloc"] }
+
+[[bin]]
+name = "poseidon2_bench"
+path = "src/native/poseidon2_bench.rs"
+
+[[bin]]
+name = "keccak_bench"
+path = "src/native/keccak_bench.rs"
+
+[[bin]]
+name = "blake3_bench"
+path = "src/native/blake3_bench.rs"
+
+[[bin]]
+name = "rescue_bench"
+path = "src/native/rescue_bench.rs"
+
+[[bin]]
+name = "merkle_tree_bench"
+path = "src/merkle_tree_bench.rs"

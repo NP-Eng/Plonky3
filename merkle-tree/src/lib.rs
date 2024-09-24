@@ -1,4 +1,5 @@
-#![no_std]
+// TODO reintroduce NP
+// #![no_std]
 
 extern crate alloc;
 

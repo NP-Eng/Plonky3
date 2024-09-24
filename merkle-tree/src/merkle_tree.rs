@@ -19,12 +19,12 @@ use tracing::instrument;
 /// see `MerkleTreeMmcs`.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct MerkleTree<F, W, M, const DIGEST_ELEMS: usize> {
-    pub(crate) leaves: Vec<M>,
+    pub leaves: Vec<M>,
     // Enable serialization for this type whenever the underlying array type supports it (len 1-32).
     #[serde(bound(serialize = "[W; DIGEST_ELEMS]: Serialize"))]
     // Enable deserialization for this type whenever the underlying array type supports it (len 1-32).
     #[serde(bound(deserialize = "[W; DIGEST_ELEMS]: Deserialize<'de>"))]
-    pub(crate) digest_layers: Vec<Vec<[W; DIGEST_ELEMS]>>,
+    pub digest_layers: Vec<Vec<[W; DIGEST_ELEMS]>>,
     _phantom: PhantomData<F>,
 }
 
@@ -152,6 +152,13 @@ where
     for i in (max_height / width * width)..max_height {
         digests[i] = h.hash_iter(tallest_matrices.iter().flat_map(|m| m.row(i)));
     }
+
+    // TODO remove
+    println!("digests.len() = {}", digests.len());
+    println!(
+        "size of each digest: {}",
+        std::mem::size_of_val(&digests[0])
+    );
 
     // Everything has been initialized so we can safely cast.
     digests

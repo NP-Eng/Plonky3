@@ -1,6 +1,7 @@
 //! The Keccak-f permutation, and hash functions built from it.
 
-#![no_std]
+// TODO reintroduce NP
+// #![no_std]
 
 use p3_symmetric::{CryptographicHasher, CryptographicPermutation, Permutation};
 use tiny_keccak::{keccakf, Hasher, Keccak};
@@ -48,12 +49,25 @@ impl CryptographicHasher<u8, [u8; 32]> for Keccak256Hash {
     where
         I: IntoIterator<Item = u8>,
     {
+        let mut count = 0;
+
+        let start = std::time::Instant::now();
+
         const BUFLEN: usize = 512; // Tweakable parameter; determined by experiment
         let mut hasher = Keccak::v256();
-        p3_util::apply_to_chunks::<BUFLEN, _, _>(input, |buf| hasher.update(buf));
+
+        p3_util::apply_to_chunks::<BUFLEN, _, _>(input, |buf| {
+            count += buf.len();
+            hasher.update(buf)
+        });
 
         let mut output = [0u8; 32];
         hasher.finalize(&mut output);
+
+        let elapsed = start.elapsed();
+
+        println!("keccak hash_iter for {} bytes in {:?}", count, elapsed);
+
         output
     }
 
