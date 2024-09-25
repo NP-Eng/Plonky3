@@ -139,6 +139,9 @@ fn main() {
     println!("\n * Rescue");
     estimate_commitment_time(LEVEL_N, "Rescue", "Rescue");
     bench_bb_rescue();
+
+    estimate_commitment_time(LEVEL_N, "Poseidon2", "Poseidon2");
+    estimate_commitment_time(LEVEL_N, "Blake3", "Poseidon2");
 }
 
 pub fn init_logger() {
