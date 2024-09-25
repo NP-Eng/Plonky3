@@ -33,6 +33,10 @@ where
     InnerP: CryptographicPermutation<[T; WIDTH]>,
 {
     fn compress(&self, input: [[T; CHUNK]; N]) -> [T; CHUNK] {
+
+        // TODO remove
+        // println!("Poseidon2 or Rescue compress for {} bytes", std::mem::size_of::<[T; CHUNK]>());
+
         debug_assert!(CHUNK * N <= WIDTH);
         let mut pre = [T::default(); WIDTH];
         for i in 0..N {

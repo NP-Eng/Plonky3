@@ -15,18 +15,17 @@ impl CryptographicHasher<u8, [u8; 32]> for Blake3 {
         I: IntoIterator<Item = u8>,
     {
         // TODO clean up
-
-        let mut count = 0;
+        // let mut count = 0;
 
         const BUFLEN: usize = 512; // Tweakable parameter; determined by experiment
         let mut hasher = blake3::Hasher::new();
         p3_util::apply_to_chunks::<BUFLEN, _, _>(input, |buf| {
-            count += buf.len();
+            //count += buf.len();
             hasher.update(buf);
         });
 
         // TODO remove
-        println!("blake3 hash inner for {} bytes", count);
+        // println!("blake3 hash_iter for {} bytes", count);
 
         hasher.finalize().into()
     }

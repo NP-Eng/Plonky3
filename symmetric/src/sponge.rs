@@ -33,12 +33,26 @@ where
     where
         I: IntoIterator<Item = T>,
     {
+        // TODO remove
+        // let mut count = 0;
+        // let l = input.into_iter().collect_vec().len() * std::mem::size_of::<T>();
+        // println!("Poseidon2 or Rescue hash_iter hehe for {} bytes; output size: {}", l, std::mem::size_of::<[T; OUT]>());
+        // return [T::default(); OUT];
+
         // static_assert(RATE < WIDTH)
         let mut state = [T::default(); WIDTH];
         for input_chunk in &input.into_iter().chunks(RATE) {
+            // TODO re-introduce (original)
             state.iter_mut().zip(input_chunk).for_each(|(s, i)| *s = i);
+
+            // TODO remove (new)
+            // state.iter_mut().zip(input_chunk).for_each(|(s, i)| {count += std::mem::size_of::<T>(); *s = i});
+
             state = self.permutation.permute(state);
         }
+        // TODO remove
+        // println!("Poseidon2 or Rescue hash_iter for {} bytes; output size: {}", count, std::mem::size_of::<[T; OUT]>());
+
         state[..OUT].try_into().unwrap()
     }
 }

@@ -21,6 +21,11 @@ use rand::thread_rng;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 
+// log2 of the number of leaves
+const LEVEL_N: usize = 13;
+// log2 of the number of caps
+const LEVEL_K: usize = 0;
+
 mod common;
 
 type GF = Goldilocks;
@@ -45,11 +50,6 @@ type Mds = IntegratedCosetMds<GF, 16>;
 type RescuePerm = Rescue<GF, Mds, BasicSboxLayer<GF>, 16>;
 type RescueH = PaddingFreeSponge<RescuePerm, 16, 8, 8>;
 type RescueC = TruncatedPermutation<RescuePerm, 2, 8, 16>;
-
-// log2 of the number of leaves
-const LEVEL_N: usize = 3;
-// log2 of the number of caps
-const LEVEL_K: usize = 0;
 
 fn bench_bb_poseidon2() {
     let perm = PoseidonPerm::new_from_rng_128(
@@ -110,8 +110,13 @@ where
     )];
 
     let start = Instant::now();
-    MerkleTree::new::<P, PW, H, C>(&h, &c, leaves);
+    let tree = MerkleTree::new::<P, PW, H, C>(&h, &c, leaves);
     let elapsed = start.elapsed();
+
+    // TODO remove
+    // for (i, level) in tree.digest_layers.into_iter().enumerate() {
+    //     println!("Level: {i}, length: {}", level.len());
+    // }
 
     println!("Merkle tree built in {:?}", elapsed);
 }
@@ -119,21 +124,21 @@ where
 fn main() {
     init_logger();
 
-    // println!("\n * Poseidon 2");
-    // estimate_commitment_time(LEVEL_N, "Poseidon2");
-    // bench_bb_poseidon2();
+    println!("\n * Poseidon2");
+    estimate_commitment_time(LEVEL_N, "Poseidon2", "Poseidon2");
+    bench_bb_poseidon2();
 
     println!("\n * Keccak");
-    estimate_commitment_time(LEVEL_N, "Keccak");
+    estimate_commitment_time(LEVEL_N, "Keccak", "Keccak");
     bench_bb_keccak();
 
-    // println!("\n * Blake3");
-    // estimate_commitment_time(LEVEL_N, "Blake3");
-    // bench_bb_blake3();
+    println!("\n * Blake3");
+    estimate_commitment_time(LEVEL_N, "Blake3", "Blake3");
+    bench_bb_blake3();
 
-    // println!("\n * Rescue");
-    // estimate_commitment_time(LEVEL_N, "Rescue");
-    // bench_bb_rescue();
+    println!("\n * Rescue");
+    estimate_commitment_time(LEVEL_N, "Rescue", "Rescue");
+    bench_bb_rescue();
 }
 
 pub fn init_logger() {

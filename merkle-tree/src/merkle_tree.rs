@@ -136,6 +136,10 @@ where
         .enumerate()
         .for_each(|(i, digests_chunk)| {
             let first_row = i * width;
+
+            // TODO remove
+            // println!("Gets here {i}");
+
             let packed_digest: [PW; DIGEST_ELEMS] = h.hash_iter(
                 tallest_matrices
                     .iter()
