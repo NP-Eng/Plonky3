@@ -1,6 +1,11 @@
+#![allow(unused)]
+
 use std::time::Duration;
 
+use p3_fri::FriConfig;
+
 pub(crate) const N_ITERS: usize = 1 << 13;
+pub(crate) const N_REC_HASHES: usize = 1365;
 
 const VERBOSE: bool = true;
 
@@ -118,6 +123,13 @@ pub(crate) fn estimate_verification_time_capped(n: usize, k: usize, h: &str) -> 
 
 pub(crate) fn estimate_verification_time(n: usize, h: &str) -> usize {
     estimate_verification_time_mixed_capped(n, 0, 0, h, h)
+}
+
+pub(crate) fn fri_config_str<M>(fri_config: &FriConfig<M>) -> String {
+    format!(
+        "log_blowup: {}, num_queries: {}, proof_of_work_bits: {}",
+        fri_config.log_blowup, fri_config.num_queries, fri_config.proof_of_work_bits
+    )
 }
 
 #[cfg(test)]

@@ -22,7 +22,7 @@ use serde::de::DeserializeOwned;
 use serde::Serialize;
 
 // log2 of the number of leaves
-const LEVEL_N: usize = 13;
+const LEVEL_N: usize = 15;
 // log2 of the number of caps
 const LEVEL_K: usize = 0;
 
