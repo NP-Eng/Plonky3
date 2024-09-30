@@ -58,7 +58,7 @@ impl MulAir {
         Standard: Distribution<F>,
     {
         let mut rng = thread_rng();
-        let mut trace_values = vec![F::default(); rows * TRACE_WIDTH];
+        let mut trace_values = F::zero_vec(rows * TRACE_WIDTH);
         for (i, (a, b, c)) in trace_values.iter_mut().tuples().enumerate() {
             let row = i / REPETITIONS;
 
@@ -274,7 +274,7 @@ fn do_test_m31_circle(log_blowup: usize, degree: u64, log_n: usize) -> Result<()
     let byte_hash = ByteHash {};
     let field_hash = FieldHash::new(byte_hash);
 
-    type MyCompress = CompressionFunctionFromHasher<u8, ByteHash, 2, 32>;
+    type MyCompress = CompressionFunctionFromHasher<ByteHash, 2, 32>;
     let compress = MyCompress::new(byte_hash);
 
     type ValMmcs = MerkleTreeMmcs<Val, u8, FieldHash, MyCompress, 32>;

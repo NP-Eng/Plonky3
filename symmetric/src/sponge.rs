@@ -10,7 +10,7 @@ use crate::permutation::CryptographicPermutation;
 /// A padding-free, overwrite-mode sponge function.
 ///
 /// `WIDTH` is the sponge's rate plus the sponge's capacity.
-#[derive(Clone, Debug)]
+#[derive(Copy, Clone, Debug)]
 pub struct PaddingFreeSponge<P, const WIDTH: usize, const RATE: usize, const OUT: usize> {
     permutation: P,
 }
@@ -41,15 +41,26 @@ where
 
         // static_assert(RATE < WIDTH)
         let mut state = [T::default(); WIDTH];
-        for input_chunk in &input.into_iter().chunks(RATE) {
-            // TODO re-introduce (original)
-            state.iter_mut().zip(input_chunk).for_each(|(s, i)| *s = i);
+        let mut input = input.into_iter();
 
-            // TODO remove (new)
-            // state.iter_mut().zip(input_chunk).for_each(|(s, i)| {count += std::mem::size_of::<T>(); *s = i});
-
-            state = self.permutation.permute(state);
+        // Itertools' chunks() is more convenient, but seems to add more overhead,
+        // hence the more manual loop.
+        'outer: loop {
+            for i in 0..RATE {
+                if let Some(x) = input.next() {
+                    state[i] = x;
+                    // TODO remove (we can't call .count() on the iterator because it can't be cloned)
+                    // count += std::mem::size_of::<T>();
+                } else {
+                    if i != 0 {
+                        self.permutation.permute_mut(&mut state);
+                    }
+                    break 'outer;
+                }
+            }
+            self.permutation.permute_mut(&mut state);
         }
+
         // TODO remove
         // println!("Poseidon2 or Rescue hash_iter for {} bytes; output size: {}", count, std::mem::size_of::<[T; OUT]>());
 

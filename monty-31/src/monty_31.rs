@@ -1,7 +1,10 @@
 //! An abstraction of 31-bit fields which use a MONTY approach for faster multiplication.
 
+use alloc::vec;
+use alloc::vec::Vec;
 use core::fmt::{self, Debug, Display, Formatter};
 use core::hash::Hash;
+use core::intrinsics::transmute;
 use core::iter::{Product, Sum};
 use core::marker::PhantomData;
 use core::ops::{Add, AddAssign, Div, Mul, MulAssign, Neg, Sub, SubAssign};
@@ -49,6 +52,7 @@ impl<MP: MontyParameters> MontyField31<MP> {
     }
 
     /// Produce a u32 in range [0, P) from a field element corresponding to the true value.
+    #[inline]
     pub(crate) fn to_u32(elem: &Self) -> u32 {
         from_monty::<MP>(elem.value)
     }
@@ -266,6 +270,12 @@ impl<FP: FieldParameters> Field for MontyField31<FP> {
     #[inline]
     fn order() -> BigUint {
         FP::PRIME.into()
+    }
+
+    #[inline]
+    fn zero_vec(len: usize) -> Vec<Self> {
+        // SAFETY: repr(transparent) ensures transmutation safety.
+        unsafe { transmute(vec![0u32; len]) }
     }
 }
 
