@@ -26,7 +26,7 @@ type ChallengeField = BinomialExtensionField<GF, 2>;
 // Hashing types
 type ByteHash = Keccak256Hash;
 type FieldHash = SerializingHasher64<ByteHash>;
-type KeccakC = CompressionFunctionFromHasher<u8, ByteHash, 2, 32>;
+type KeccakC = CompressionFunctionFromHasher<ByteHash, 2, 32>;
 
 // Commitment schemes
 type GFMmcs = MerkleTreeMmcs<GF, u8, FieldHash, KeccakC, 32>;

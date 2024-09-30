@@ -11,7 +11,7 @@ type ByteHash = Blake3;
 type FieldHash = SerializingHasher64<Blake3>;
 
 // type Blake3H = SerializingHasher64<Blake3>;
-type Blake3C = CompressionFunctionFromHasher<u8, Blake3, 2, 32>;
+type Blake3C = CompressionFunctionFromHasher<Blake3, 2, 32>;
 
 fn main() {
     let byte_hash = ByteHash {};

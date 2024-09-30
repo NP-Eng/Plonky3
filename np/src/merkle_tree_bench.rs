@@ -39,11 +39,11 @@ type PoseidonC = TruncatedPermutation<PoseidonPerm, 2, 8, 16>;
 // *************** Keccak Types **************
 type Keccak = Keccak256Hash;
 type KeccakH = SerializingHasher64<Keccak>;
-type KeccakC = CompressionFunctionFromHasher<u8, Keccak, 2, 32>;
+type KeccakC = CompressionFunctionFromHasher<Keccak, 2, 32>;
 
 // *************** Blake3 Types ***************
 type Blake3H = SerializingHasher64<Blake3>;
-type Blake3C = CompressionFunctionFromHasher<u8, Blake3, 2, 32>;
+type Blake3C = CompressionFunctionFromHasher<Blake3, 2, 32>;
 
 // ************** Rescue Types ***************
 type Mds = IntegratedCosetMds<GF, 16>;

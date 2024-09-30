@@ -9,7 +9,7 @@ use common::N_ITERS;
 type GF = Goldilocks;
 type ByteHash = Keccak256Hash;
 type FieldHash = SerializingHasher64<ByteHash>;
-type KeccakC = CompressionFunctionFromHasher<u8, Keccak256Hash, 2, 32>;
+type KeccakC = CompressionFunctionFromHasher<Keccak256Hash, 2, 32>;
 
 fn main() {
     let byte_hash = ByteHash {};
