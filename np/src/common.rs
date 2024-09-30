@@ -27,21 +27,38 @@ const COMPRESSION_TIMES: [(&str, usize); 4] = [
 ];
 */
 
-// A's machine
+// // A's machine (--release)
+// // Leaf digest times in nanoseconds
+// const DIGEST_TIMES: [(&str, usize); 4] = [
+//     ("Poseidon2", 2600),
+//     ("Keccak", 700),
+//     ("Blake3", 360),
+//     ("Rescue", 24600),
+// ];
+
+// // Two-to-one compression times in nanoseconds
+// const COMPRESSION_TIMES: [(&str, usize); 4] = [
+//     ("Poseidon2", 1400),
+//     ("Keccak", 550),
+//     ("Blake3", 320),
+//     ("Rescue", 21800),
+// ];
+
+// A's machine (without --release)
 // Leaf digest times in nanoseconds
 const DIGEST_TIMES: [(&str, usize); 4] = [
-    ("Poseidon2", 2600),
-    ("Keccak", 700),
-    ("Blake3", 360),
-    ("Rescue", 24600),
+    ("Poseidon2", 41000),
+    ("Keccak", 15500),
+    ("Blake3", 3100),
+    ("Rescue", 227500),
 ];
 
 // Two-to-one compression times in nanoseconds
 const COMPRESSION_TIMES: [(&str, usize); 4] = [
-    ("Poseidon2", 1400),
-    ("Keccak", 550),
-    ("Blake3", 320),
-    ("Rescue", 21800),
+    ("Poseidon2", 39700),
+    ("Keccak", 16800),
+    ("Blake3", 3800),
+    ("Rescue", 227800),
 ];
 
 fn get_digest_time(hash: &str) -> usize {
