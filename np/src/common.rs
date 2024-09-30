@@ -4,7 +4,7 @@ use std::time::Duration;
 
 use p3_fri::FriConfig;
 
-pub(crate) const N_ITERS: usize = 1 << 13;
+pub(crate) const N_ITERS: usize = 1 << 17;
 pub(crate) const N_REC_HASHES: usize = 1365;
 
 const VERBOSE: bool = true;
@@ -46,27 +46,37 @@ const COMPRESSION_TIMES: [(&str, usize); 4] = [
 
 // A's machine (without --release)
 // Leaf digest times in nanoseconds
-const DIGEST_TIMES: [(&str, usize); 4] = [
-    ("Poseidon2", 41000),
-    ("Keccak", 15500),
-    ("Blake3", 3100),
-    ("Rescue", 227500),
+const DIGEST_TIMES: [(&str, &str, usize); 8] = [
+    ("Poseidon2", "Goldilocks", 41000),
+    ("Keccak", "Goldilocks", 15500),
+    ("Blake3", "Goldilocks", 3100),
+    ("Rescue", "Goldilocks", 227500),
+
+    ("Poseidon2", "Mersenne31", 28800),
+    ("Keccak", "Mersenne31", 14600),
+    ("Blake3", "Mersenne31", 2300),
+    ("Rescue", "Mersenne31", 138800),
 ];
 
 // Two-to-one compression times in nanoseconds
-const COMPRESSION_TIMES: [(&str, usize); 4] = [
-    ("Poseidon2", 39700),
-    ("Keccak", 16800),
-    ("Blake3", 3800),
-    ("Rescue", 227800),
+const COMPRESSION_TIMES: [(&str, &str, usize); 8] = [
+    ("Poseidon2", "Goldilocks", 39700),
+    ("Keccak", "Goldilocks", 16800),
+    ("Blake3", "Goldilocks", 3800),
+    ("Rescue", "Goldilocks", 227800),
+
+    ("Poseidon2", "Mersenne31", 28300),
+    ("Keccak", "Mersenne31", 16900),
+    ("Blake3", "Mersenne31", 3900),
+    ("Rescue", "Mersenne31", 137400),
 ];
 
-fn get_digest_time(hash: &str) -> usize {
-    DIGEST_TIMES.iter().find(|(h, _)| *h == hash).unwrap().1
+fn get_digest_time(hash: &str, field: &str) -> usize {
+    DIGEST_TIMES.iter().find_map(|(h, f, v)| if *h == hash && *f == field {Some(*v)} else {None}).unwrap()
 }
 
-fn get_compression_time(hash: &str) -> usize {
-    COMPRESSION_TIMES.iter().find(|(h, _)| *h == hash).unwrap().1
+fn get_compression_time(hash: &str, field: &str) -> usize {
+    COMPRESSION_TIMES.iter().find_map(|(h, f, v)| if *h == hash && *f == field {Some(*v)} else {None}).unwrap()
 }
 
 // n: level of the leaves (i.e. the number of leaves is 2^n)
@@ -83,11 +93,12 @@ pub(crate) fn estimate_commitment_time_mixed_capped(
     hd: &str,
     h1: &str,
     h2: &str,
+    field: &str,
 ) -> usize {
-    let time_h1 = get_compression_time(h1);
-    let time_h2 = get_compression_time(h2);
+    let time_h1 = get_compression_time(h1, field);
+    let time_h2 = get_compression_time(h2, field);
     
-    let time_digest = (1 << n) * get_digest_time(hd);
+    let time_digest = (1 << n) * get_digest_time(hd, field);
     let time_compress = ((1 << n) - (1 << m)) * time_h1 + ((1 << m) - (1 << k)) * time_h2;
 
     let time = time_digest + time_compress;
@@ -104,16 +115,16 @@ pub(crate) fn estimate_commitment_time_mixed_capped(
     time
 }
 
-pub(crate) fn estimate_commitment_time_mixed(n: usize, m: usize, hd: &str, h1: &str, h2: &str) -> usize {
-    estimate_commitment_time_mixed_capped(n, m, 0, hd, h1, h2)
+pub(crate) fn estimate_commitment_time_mixed(n: usize, m: usize, hd: &str, h1: &str, h2: &str, field: &str) -> usize {
+    estimate_commitment_time_mixed_capped(n, m, 0, hd, h1, h2, field)
 }
 
-pub(crate) fn estimate_commitment_time_capped(n: usize, k: usize, hd: &str, h: &str) -> usize {
-    estimate_commitment_time_mixed_capped(n, k, k, hd, h, h)
+pub(crate) fn estimate_commitment_time_capped(n: usize, k: usize, hd: &str, h: &str, field: &str) -> usize {
+    estimate_commitment_time_mixed_capped(n, k, k, hd, h, h, field)
 }
 
-pub(crate) fn estimate_commitment_time(n: usize, hd: &str, h: &str) -> usize {
-    estimate_commitment_time_mixed_capped(n, 0, 0, hd, h, h)
+pub(crate) fn estimate_commitment_time(n: usize, hd: &str, h: &str, field: &str) -> usize {
+    estimate_commitment_time_mixed_capped(n, 0, 0, hd, h, h, field)
 }
 
 pub(crate) fn estimate_verification_time_mixed_capped(
@@ -122,24 +133,25 @@ pub(crate) fn estimate_verification_time_mixed_capped(
     k: usize,
     h1: &str,
     h2: &str,
+    field: &str,
 ) -> usize {
     // Add leaf digest time
     todo!();
-    let time_h1 = get_compression_time(h1);
-    let time_h2 = get_compression_time(h2);
+    let time_h1 = get_compression_time(h1, field);
+    let time_h2 = get_compression_time(h2, field);
     (n - m) * time_h1 + (m - k) * time_h2
 }
 
-pub(crate) fn estimate_verification_time_mixed(n: usize, m: usize, h1: &str, h2: &str) -> usize {
-    estimate_verification_time_mixed_capped(n, m, 0, h1, h2)
+pub(crate) fn estimate_verification_time_mixed(n: usize, m: usize, h1: &str, h2: &str, field: &str) -> usize {
+    estimate_verification_time_mixed_capped(n, m, 0, h1, h2, field)
 }
 
-pub(crate) fn estimate_verification_time_capped(n: usize, k: usize, h: &str) -> usize {
-    estimate_verification_time_mixed_capped(n, k, k, h, h)
+pub(crate) fn estimate_verification_time_capped(n: usize, k: usize, h: &str, field: &str) -> usize {
+    estimate_verification_time_mixed_capped(n, k, k, h, h, field)
 }
 
-pub(crate) fn estimate_verification_time(n: usize, h: &str) -> usize {
-    estimate_verification_time_mixed_capped(n, 0, 0, h, h)
+pub(crate) fn estimate_verification_time(n: usize, h: &str, field: &str) -> usize {
+    estimate_verification_time_mixed_capped(n, 0, 0, h, h, field)
 }
 
 pub(crate) fn fri_config_str<M>(fri_config: &FriConfig<M>) -> String {
@@ -153,7 +165,7 @@ pub(crate) fn fri_config_str<M>(fri_config: &FriConfig<M>) -> String {
 #[test]
 fn test_estimator() {
     assert_eq!(
-        estimate_commitment_time_capped(28, 4, "Poseidon", "Poseidon"),
-        estimate_commitment_time_mixed_capped(28, 28, 4, "Poseidon", "Poseidon", "Poseidon"),
+        estimate_commitment_time_capped(28, 4, "Poseidon", "Poseidon", "Goldilocks"),
+        estimate_commitment_time_mixed_capped(28, 28, 4, "Poseidon", "Poseidon", "Poseidon", "Goldilocks"),
     );
 }

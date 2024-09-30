@@ -16,6 +16,7 @@ p3-keccak = { path = "../keccak" }
 p3-keccak-air = { path = "../keccak-air" }
 p3-matrix = { path = "../matrix" }
 p3-mds = { path = "../mds" }
+p3-mersenne-31 = { path = "../mersenne-31" }
 p3-merkle-tree = { path = "../merkle-tree" }
 p3-poseidon2 = { path = "../poseidon2" }
 p3-rescue = { path = "../rescue" }
@@ -27,25 +28,45 @@ rand = "0.8.5"
 serde = { version = "1.0", default-features = false, features = ["alloc"] }
 
 [[bin]]
-name = "poseidon2_bench"
-path = "src/native/poseidon2_bench.rs"
+name = "poseidon2_g_bench"
+path = "src/native/goldilocks/poseidon2_g_bench.rs"
 
 [[bin]]
-name = "keccak_bench"
-path = "src/native/keccak_bench.rs"
+name = "keccak_g_bench"
+path = "src/native/goldilocks/keccak_g_bench.rs"
 
 [[bin]]
-name = "blake3_bench"
-path = "src/native/blake3_bench.rs"
+name = "blake3_g_bench"
+path = "src/native/goldilocks/blake3_g_bench.rs"
 
 [[bin]]
-name = "rescue_bench"
-path = "src/native/rescue_bench.rs"
+name = "rescue_g_bench"
+path = "src/native/goldilocks/rescue_g_bench.rs"
+
+[[bin]]
+name = "poseidon2_m_bench"
+path = "src/native/m31/poseidon2_m_bench.rs"
+
+[[bin]]
+name = "keccak_m_bench"
+path = "src/native/m31/keccak_m_bench.rs"
+
+[[bin]]
+name = "blake3_m_bench"
+path = "src/native/m31/blake3_m_bench.rs"
+
+[[bin]]
+name = "rescue_m_bench"
+path = "src/native/m31/rescue_m_bench.rs"
 
 [[bin]]
 name = "keccak_rec_bench"
 path = "src/recursive/keccak_rec_bench.rs"
 
 [[bin]]
-name = "merkle_tree_bench"
-path = "src/merkle_tree_bench.rs"
+name = "merkle_tree_g_bench"
+path = "src/merkle_tree_g_bench.rs"
+
+[[bin]]
+name = "merkle_tree_m_bench"
+path = "src/merkle_tree_m_bench.rs"
