@@ -20,7 +20,9 @@ impl CryptographicHasher<u8, [u8; 32]> for Blake3 {
         const BUFLEN: usize = 512; // Tweakable parameter; determined by experiment
         let mut hasher = blake3::Hasher::new();
         p3_util::apply_to_chunks::<BUFLEN, _, _>(input, |buf| {
-            //count += buf.len();
+            // TODO remove
+            // count += buf.len();
+
             hasher.update(buf);
         });
 

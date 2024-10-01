@@ -102,21 +102,22 @@ impl CryptographicHasher<u8, [u8; 32]> for Keccak256Hash {
     {
         // TODO clean up NP
         // let mut count = 0;
-        // let start = std::time::Instant::now();
 
         const BUFLEN: usize = 512; // Tweakable parameter; determined by experiment
         let mut hasher = Keccak::v256();
 
         p3_util::apply_to_chunks::<BUFLEN, _, _>(input, |buf| {
+            // TODO remove
             // count += buf.len();
+
             hasher.update(buf)
         });
 
         let mut output = [0u8; 32];
         hasher.finalize(&mut output);
 
-        // let elapsed = start.elapsed();
-        // println!("keccak hash_iter for {} bytes in {:?}", count, elapsed);
+        // TODO remove
+        // println!("keccak hash_iter for {} bytes", count);
 
         output
     }

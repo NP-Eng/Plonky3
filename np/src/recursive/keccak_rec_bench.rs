@@ -1,4 +1,3 @@
-
 use std::fmt::Debug;
 
 use p3_challenger::{HashChallenger, SerializingChallenger64};
@@ -37,7 +36,6 @@ type PCS = TwoAdicFriPcs<GF, Radix2DitParallel, GFMmcs, ChallengeFieldMmcs>;
 type Challenger = SerializingChallenger64<GF, HashChallenger<u8, ByteHash, 32>>;
 
 fn main() {
-
     let byte_hash = ByteHash {};
     let hasher = FieldHash::new(byte_hash);
     let compress = KeccakC::new(byte_hash);

@@ -35,7 +35,7 @@ where
     {
         // TODO remove
         // let mut count = 0;
-        
+
         // static_assert(RATE < WIDTH)
         let mut state = [T::default(); WIDTH];
         let mut input = input.into_iter();
@@ -45,9 +45,10 @@ where
         'outer: loop {
             for i in 0..RATE {
                 if let Some(x) = input.next() {
-                    state[i] = x;
                     // TODO remove (we can't call .count() on the iterator because it can't be cloned)
                     // count += std::mem::size_of::<T>();
+
+                    state[i] = x;
                 } else {
                     if i != 0 {
                         self.permutation.permute_mut(&mut state);
