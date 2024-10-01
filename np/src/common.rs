@@ -4,7 +4,7 @@ use std::time::Duration;
 
 use p3_fri::FriConfig;
 
-pub(crate) const N_ITERS: usize = 1 << 3;
+pub(crate) const N_ITERS: usize = 1 << 15;
 pub(crate) const N_REC_HASHES: usize = 1365;
 
 const VERBOSE: bool = true;
@@ -52,7 +52,7 @@ const DIGEST_TIMES: [(&str, &str, usize); 8] = [
     ("Blake3", "Goldilocks", 3100),
     ("Rescue", "Goldilocks", 227500),
 
-    ("Poseidon2", "Mersenne31", 28800),
+    ("Poseidon2", "Mersenne31", 28300),
     ("Keccak", "Mersenne31", 14600),
     ("Blake3", "Mersenne31", 2300),
     ("Rescue", "Mersenne31", 138800),
@@ -60,12 +60,12 @@ const DIGEST_TIMES: [(&str, &str, usize); 8] = [
 
 // Two-to-one compression times in nanoseconds
 const COMPRESSION_TIMES: [(&str, &str, usize); 8] = [
-    ("Poseidon2", "Goldilocks", 39700),
+    ("Poseidon2", "Goldilocks", 40500),
     ("Keccak", "Goldilocks", 16800),
     ("Blake3", "Goldilocks", 3800),
-    ("Rescue", "Goldilocks", 227800),
+    ("Rescue", "Goldilocks", 225800),
 
-    ("Poseidon2", "Mersenne31", 28300),
+    ("Poseidon2", "Mersenne31", 28200),
     ("Keccak", "Mersenne31", 16900),
     ("Blake3", "Mersenne31", 3900),
     ("Rescue", "Mersenne31", 137400),

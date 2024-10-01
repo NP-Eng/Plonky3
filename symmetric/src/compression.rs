@@ -33,7 +33,7 @@ where
     fn compress(&self, input: [[T; CHUNK]; N]) -> [T; CHUNK] {
 
         // TODO remove
-        println!("Poseidon2 or Rescue compress for {} bytes", N * std::mem::size_of::<[T; CHUNK]>());
+        // println!("Poseidon2 or Rescue compress for {} bytes", N * std::mem::size_of::<[T; CHUNK]>());
 
         debug_assert!(CHUNK * N <= WIDTH);
         let mut pre = [T::default(); WIDTH];
@@ -43,7 +43,7 @@ where
         let post = self.inner_permutation.permute(pre);
 
         // TODO remove
-        println!("Output size: {}", CHUNK * std::mem::size_of::<T>());
+        // println!("Output size: {}", CHUNK * std::mem::size_of::<T>());
 
         post[..CHUNK].try_into().unwrap()
     }
