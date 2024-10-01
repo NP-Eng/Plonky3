@@ -34,7 +34,7 @@ where
         I: IntoIterator<Item = T>,
     {
         // TODO remove
-        // let mut count = 0;
+        let mut count = 0;
         // let l = input.into_iter().collect_vec().len() * std::mem::size_of::<T>();
         // println!("Poseidon2 or Rescue hash_iter hehe for {} bytes; output size: {}", l, std::mem::size_of::<[T; OUT]>());
         // return [T::default(); OUT];
@@ -50,7 +50,7 @@ where
                 if let Some(x) = input.next() {
                     state[i] = x;
                     // TODO remove (we can't call .count() on the iterator because it can't be cloned)
-                    // count += std::mem::size_of::<T>();
+                    count += std::mem::size_of::<T>();
                 } else {
                     if i != 0 {
                         self.permutation.permute_mut(&mut state);
@@ -62,7 +62,7 @@ where
         }
 
         // TODO remove
-        // println!("Poseidon2 or Rescue hash_iter for {} bytes; output size: {}", count, std::mem::size_of::<[T; OUT]>());
+        println!("Poseidon2 or Rescue hash_iter for {} bytes; output size: {} bytes", count, std::mem::size_of::<[T; OUT]>());
 
         state[..OUT].try_into().unwrap()
     }

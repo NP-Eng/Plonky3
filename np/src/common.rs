@@ -4,7 +4,7 @@ use std::time::Duration;
 
 use p3_fri::FriConfig;
 
-pub(crate) const N_ITERS: usize = 1 << 17;
+pub(crate) const N_ITERS: usize = 1 << 3;
 pub(crate) const N_REC_HASHES: usize = 1365;
 
 const VERBOSE: bool = true;
