@@ -6,19 +6,23 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 p3-blake3 = { path = "../blake3" }
-p3-commit = { path = "../commit" }
 p3-challenger = { path = "../challenger" }
+p3-circle = { path = "../circle" }
+p3-commit = { path = "../commit" }
 p3-dft = { path = "../dft" }
 p3-field = { path = "../field" }
 p3-fri = { path = "../fri" }
 p3-goldilocks = { path = "../goldilocks" }
 p3-keccak = { path = "../keccak" }
 p3-keccak-air = { path = "../keccak-air" }
+p3-koala-bear = { path = "../koala-bear" }
 p3-matrix = { path = "../matrix" }
 p3-mds = { path = "../mds" }
 p3-mersenne-31 = { path = "../mersenne-31" }
 p3-merkle-tree = { path = "../merkle-tree" }
+p3-monty-31 = { path = "../monty-31" }
 p3-poseidon2 = { path = "../poseidon2" }
+p3-poseidon2-air = { path = "../poseidon2-air" }
 p3-rescue = { path = "../rescue" }
 p3-symmetric = { path = "../symmetric" }
 p3-uni-stark = { path = "../uni-stark" }
@@ -60,13 +64,29 @@ name = "rescue_m_bench"
 path = "src/native/m31/rescue_m_bench.rs"
 
 [[bin]]
-name = "keccak_rec_bench"
-path = "src/recursive/keccak_rec_bench.rs"
+name = "rec_keccak_blake3_m_bench"
+path = "src/recursive/rec_keccak_blake3_m_bench.rs"
+
+[[bin]]
+name = "rec_keccak_poseidon2_k_bench"
+path = "src/recursive/rec_keccak_poseidon2_k_bench.rs"
+
+[[bin]]
+name = "rec_poseidon2_poseidon2_k_bench"
+path = "src/recursive/rec_poseidon2_poseidon2_k_bench.rs"
+
+# [[bin]]
+# name = "rec_poseidon2_blake3_m_bench"
+# path = "src/recursive/rec_poseidon2_blake3_m_bench.rs"
+
+[[bin]]
+name = "rec_merkle_tree_m_bench"
+path = "src/recursive/rec_merkle_tree_m_bench.rs"
 
 [[bin]]
 name = "merkle_tree_g_bench"
-path = "src/merkle_tree_g_bench.rs"
+path = "src/native/merkle_tree_g_bench.rs"
 
 [[bin]]
 name = "merkle_tree_m_bench"
-path = "src/merkle_tree_m_bench.rs"
+path = "src/native/merkle_tree_m_bench.rs"
