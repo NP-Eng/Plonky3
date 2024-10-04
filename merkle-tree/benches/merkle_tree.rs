@@ -44,7 +44,7 @@ fn bench_bb_poseidon2(criterion: &mut Criterion) {
     type C = TruncatedPermutation<Perm, 2, 8, 16>;
     let c = C::new(perm);
 
-    bench_merkle_tree::<<F as Field>::Packing, <F as Field>::Packing, H, C, 8>(criterion, h, c);
+    bench_mmcs::<<F as Field>::Packing, <F as Field>::Packing, H, C, 8>(criterion, h, c);
 }
 
 fn bench_bb_rescue(criterion: &mut Criterion) {
@@ -63,7 +63,7 @@ fn bench_bb_rescue(criterion: &mut Criterion) {
     type C = TruncatedPermutation<Perm, 2, 8, 16>;
     let c = C::new(perm);
 
-    bench_merkle_tree::<<F as Field>::Packing, <F as Field>::Packing, H, C, 8>(criterion, h, c);
+    bench_mmcs::<<F as Field>::Packing, <F as Field>::Packing, H, C, 8>(criterion, h, c);
 }
 
 fn bench_bb_blake3(criterion: &mut Criterion) {
@@ -76,7 +76,7 @@ fn bench_bb_blake3(criterion: &mut Criterion) {
     let b = Blake3 {};
     let c = C::new(b);
 
-    bench_merkle_tree::<F, u8, H, C, 32>(criterion, h, c);
+    bench_mmcs::<F, u8, H, C, 32>(criterion, h, c);
 }
 
 fn bench_bb_keccak(criterion: &mut Criterion) {
@@ -89,7 +89,7 @@ fn bench_bb_keccak(criterion: &mut Criterion) {
     type C = CompressionFunctionFromHasher<Keccak256Hash, 2, 32>;
     let c = C::new(k);
 
-    bench_merkle_tree::<F, u8, H, C, 32>(criterion, h, c);
+    bench_mmcs::<F, u8, H, C, 32>(criterion, h, c);
 }
 
 fn bench_merkle_tree<P, PW, H, C, const DIGEST_ELEMS: usize>(criterion: &mut Criterion, h: H, c: C)
@@ -118,6 +118,43 @@ where
         type_name::<C>()
     );
     let params = BenchmarkId::from_parameter(dims);
+
+    let mut group = criterion.benchmark_group(name);
+    group.sample_size(10);
+
+    let mmcs = MerkleTreeMmcs::<P, PW, H, C, DIGEST_ELEMS>::new(h, c);
+    group.bench_with_input(params, &leaves, |b, input| {
+        b.iter(|| mmcs.commit(input.clone()))
+    });
+}
+
+fn bench_mmcs<P, PW, H, C, const DIGEST_ELEMS: usize>(criterion: &mut Criterion, h: H, c: C)
+where
+    P: PackedField,
+    PW: PackedValue,
+    H: CryptographicHasher<P::Scalar, [PW::Value; DIGEST_ELEMS]>,
+    H: CryptographicHasher<P, [PW; DIGEST_ELEMS]>,
+    H: Sync,
+    C: PseudoCompressionFunction<[PW::Value; DIGEST_ELEMS], 2>,
+    C: PseudoCompressionFunction<[PW; DIGEST_ELEMS], 2>,
+    C: Sync,
+    [PW::Value; DIGEST_ELEMS]: Serialize + DeserializeOwned,
+    Standard: Distribution<P::Scalar>,
+{
+    const ROWS: usize = 1 << 16;
+    const COLS: usize = 135;
+
+    let matrix_1 = RowMajorMatrix::<P::Scalar>::rand(&mut thread_rng(), ROWS + 1, COLS);
+    let matrix_2 = RowMajorMatrix::<P::Scalar>::rand(&mut thread_rng(), ROWS / 2 + 1, COLS);
+    let dims = vec![matrix_1.dimensions(), matrix_2.dimensions()];
+    let leaves = vec![matrix_1, matrix_2];
+
+    let name = format!(
+        "MixedMerkleCommitmentScheme::<{}, {}>::new",
+        type_name::<H>(),
+        type_name::<C>()
+    );
+    let params = BenchmarkId::from_parameter(format!("{:?}", dims));
 
     let mut group = criterion.benchmark_group(name);
     group.sample_size(10);
