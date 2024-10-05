@@ -141,7 +141,7 @@ where
     [PW::Value; DIGEST_ELEMS]: Serialize + DeserializeOwned,
     Standard: Distribution<P::Scalar>,
 {
-    const ROWS: usize = 1 << 16;
+    const ROWS: usize = 1 << 15;
     const COLS: usize = 135;
 
     let matrix_1 = RowMajorMatrix::<P::Scalar>::rand(&mut thread_rng(), ROWS + 1, COLS);
