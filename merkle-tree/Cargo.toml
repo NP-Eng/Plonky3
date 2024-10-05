@@ -28,3 +28,6 @@ rand = "0.8.5"
 [[bench]]
 name = "merkle_tree"
 harness = false
+
+[features]
+parallel = ["p3-maybe-rayon/parallel"]
