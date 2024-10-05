@@ -219,7 +219,25 @@ where
 
     // At this point, we've exceeded the height of the matrices to inject, so we continue the
     // process above except with default_digest in place of an input digest.
-    for i in next_len..next_len_padded {
+    next_digests[next_len..next_len_padded]
+        .par_chunks_exact_mut(width)
+        .enumerate()
+        .for_each(|(chunk_idx, digests_chunk)| {
+            let first_row = next_len + chunk_idx * width;
+            let left = array::from_fn(|j| PW::from_fn(|k| prev_layer[2 * (first_row + k)][j]));
+            let right = array::from_fn(|j| PW::from_fn(|k| prev_layer[2 * (first_row + k) + 1][j]));
+            let mut packed_digest = c.compress([left, right]);
+            packed_digest = c.compress([
+                packed_digest,
+                array::from_fn(|j| PW::from_fn(|_| default_digest[j])),
+            ]);
+            for (dst, src) in digests_chunk.iter_mut().zip(unpack_array(packed_digest)) {
+                *dst = src;
+            }
+        });
+
+    // Handle any remaining elements that don't fit in a full chunk
+    for i in (next_len + (next_len_padded - next_len) / width * width)..next_len_padded {
         let left = prev_layer[2 * i];
         let right = prev_layer[2 * i + 1];
         let digest = c.compress([left, right]);
