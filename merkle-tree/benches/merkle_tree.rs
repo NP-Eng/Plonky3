@@ -44,7 +44,12 @@ fn bench_bb_poseidon2(criterion: &mut Criterion) {
     type C = TruncatedPermutation<Perm, 2, 8, 16>;
     let c = C::new(perm);
 
-    bench_mmcs::<<F as Field>::Packing, <F as Field>::Packing, H, C, 8>(criterion, h, c);
+    bench_mmcs::<<F as Field>::Packing, <F as Field>::Packing, H, C, 8>(
+        criterion,
+        h.clone(),
+        c.clone(),
+    );
+    bench_merkle_tree::<<F as Field>::Packing, <F as Field>::Packing, H, C, 8>(criterion, h, c);
 }
 
 fn bench_bb_rescue(criterion: &mut Criterion) {
@@ -63,7 +68,12 @@ fn bench_bb_rescue(criterion: &mut Criterion) {
     type C = TruncatedPermutation<Perm, 2, 8, 16>;
     let c = C::new(perm);
 
-    bench_mmcs::<<F as Field>::Packing, <F as Field>::Packing, H, C, 8>(criterion, h, c);
+    bench_mmcs::<<F as Field>::Packing, <F as Field>::Packing, H, C, 8>(
+        criterion,
+        h.clone(),
+        c.clone(),
+    );
+    bench_merkle_tree::<<F as Field>::Packing, <F as Field>::Packing, H, C, 8>(criterion, h, c);
 }
 
 fn bench_bb_blake3(criterion: &mut Criterion) {
@@ -76,7 +86,8 @@ fn bench_bb_blake3(criterion: &mut Criterion) {
     let b = Blake3 {};
     let c = C::new(b);
 
-    bench_mmcs::<F, u8, H, C, 32>(criterion, h, c);
+    bench_mmcs::<F, u8, H, C, 32>(criterion, h.clone(), c.clone());
+    bench_merkle_tree::<F, u8, H, C, 32>(criterion, h, c);
 }
 
 fn bench_bb_keccak(criterion: &mut Criterion) {
@@ -89,7 +100,8 @@ fn bench_bb_keccak(criterion: &mut Criterion) {
     type C = CompressionFunctionFromHasher<Keccak256Hash, 2, 32>;
     let c = C::new(k);
 
-    bench_mmcs::<F, u8, H, C, 32>(criterion, h, c);
+    bench_mmcs::<F, u8, H, C, 32>(criterion, h.clone(), c.clone());
+    bench_merkle_tree::<F, u8, H, C, 32>(criterion, h, c);
 }
 
 fn bench_merkle_tree<P, PW, H, C, const DIGEST_ELEMS: usize>(criterion: &mut Criterion, h: H, c: C)
