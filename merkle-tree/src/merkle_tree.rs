@@ -127,7 +127,12 @@ where
 {
     let width = PW::WIDTH;
     let max_height = tallest_matrices[0].height();
-    let max_height_padded = max_height + max_height % 2;
+    // we always want to return an even number of digests, except when it's the root.
+    let max_height_padded = if max_height == 1 {
+        1
+    } else {
+        max_height + max_height % 2
+    };
 
     let default_digest: [PW::Value; DIGEST_ELEMS] = [PW::Value::default(); DIGEST_ELEMS];
     let mut digests = vec![default_digest; max_height_padded];
