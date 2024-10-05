@@ -184,14 +184,14 @@ where
     let width = PW::WIDTH;
     let next_len = matrices_to_inject[0].height();
     // We always want to return an even number of digests, except when it's the root.
-    let next_len_padded = if prev_layer.len() == 2 {
+    let next_len_padded_even = if prev_layer.len() == 2 {
         1
     } else {
         (prev_layer.len() / 2 + 1) & !1
     };
 
     let default_digest: [PW::Value; DIGEST_ELEMS] = [PW::Value::default(); DIGEST_ELEMS];
-    let mut next_digests = vec![default_digest; next_len_padded];
+    let mut next_digests = vec![default_digest; next_len_padded_even];
     next_digests[0..next_len]
         .par_chunks_exact_mut(width)
         .enumerate()
