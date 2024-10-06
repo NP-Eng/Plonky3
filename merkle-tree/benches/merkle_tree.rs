@@ -162,7 +162,7 @@ where
     let leaves = vec![matrix_1, matrix_2];
 
     let name = format!(
-        "MixedMerkleCommitmentScheme::<{}, {}>::new",
+        "MerkleTreeMmcs::<{}, {}>::new",
         type_name::<H>(),
         type_name::<C>()
     );
