@@ -90,3 +90,7 @@ path = "src/native/merkle_tree_g_bench.rs"
 [[bin]]
 name = "merkle_tree_m_bench"
 path = "src/native/merkle_tree_m_bench.rs"
+
+[[bin]]
+name = "poseidon_digest"
+path = "src/hash/poseidon_digest.rs"

@@ -4,7 +4,7 @@ use std::time::Duration;
 
 use p3_fri::FriConfig;
 
-pub(crate) const N_ITERS: usize = 1 << 16;
+pub(crate) const N_ITERS: usize = 1 << 12;
 
 // log2 of the number of leaves
 pub(crate) const LEVEL_N: usize = 3;
