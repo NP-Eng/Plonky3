@@ -547,99 +547,16 @@ fn compute_f_oracle_from_g<F: TwoAdicField>(
 
     // 2. Compute the values of f_i at the each element of each S_j using the
     // values of g_i therein
-
-    // Each call to the oracle involves a division by an evaluation of the
-    // vanishing polynomial at the query set. We can batch-invert those
-    // denominators outside to reduce the number of costly calls to invert()
-    let denom_inv_hints = match oracle {
-        Oracle::Transparent => vec![vec![None; folding_factor]; queried_point_preimages.len()],
-        Oracle::Virtual(virtual_function) => {
-            let flat_denoms: Vec<F> = queried_point_preimages
-                .iter()
-                .flat_map(|points| {
-                    points
-                        .iter()
-                        .map(|point| {
-                            virtual_function
-                                .quotient_set
-                                .iter()
-                                .map(|q| *point - *q)
-                                .product()
-                        })
-                        .collect_vec()
-                })
-                .collect_vec();
-
-            let flat_denom_invs = batch_multiplicative_inverse(&flat_denoms)
-                .into_iter()
-                .map(|x| Some(x))
-                .collect_vec();
-
-            flat_denom_invs
-                .chunks_exact(folding_factor)
-                .map(|chunk| chunk.to_vec())
-                .collect_vec()
-        }
-    };
-
-    // A similar phenomenon occurs with the degree-correction factor
-    // (1 - rx)^(e - 1)/(1 - rx) in the notation of the paper (sec. 2.3): we can
-    // batch-invert the denominators to save on invert() calls. Since this
-    // already necessitates rx, we also store the latter and pass it to the
-    // oracle-computing function. Note that this batch inversion could be lumped
-    // together with the one above for maximum savings at the cost of code
-    // clarity.
-    let deg_cor_hints = match oracle {
-        Oracle::Transparent => vec![vec![None; folding_factor]; queried_point_preimages.len()],
-        Oracle::Virtual(virtual_function) => {
-            let (flat_rx_s, flat_denoms): (Vec<F>, Vec<F>) = queried_point_preimages
-                .iter()
-                .flat_map(|points| {
-                    points.iter().map(|point| {
-                        let rx = *point * virtual_function.comb_randomness;
-
-                        if rx == F::ONE {
-                            (F::ONE, F::ONE)
-                        } else {
-                            (rx, (F::ONE - rx))
-                        }
-                    })
-                })
-                .unzip();
-
-            let flat_denom_invs = batch_multiplicative_inverse(&flat_denoms);
-
-            flat_rx_s
-                .into_iter()
-                .zip(flat_denom_invs)
-                .map(|(rx, denom_inv)| Some((rx, denom_inv)))
-                .collect_vec()
-                .chunks_exact(folding_factor)
-                .map(|chunk| chunk.to_vec())
-                .collect_vec()
-        }
-    };
-
-    // Compute the values of f_i at the each element of each S_j using the
-    // precomputed hints
     queried_point_preimages
         .into_iter()
         .zip(g_eval_batches.into_iter())
-        .zip(denom_inv_hints.into_iter())
-        .zip(deg_cor_hints.into_iter())
-        .map(
-            |(((points, g_eval_batch), denom_inverse_hints), deg_cor_hints)| {
-                points
-                    .into_iter()
-                    .zip(g_eval_batch.into_iter())
-                    .zip(denom_inverse_hints.into_iter())
-                    .zip(deg_cor_hints.into_iter())
-                    .map(|(((point, g_eval), denom_inverse_hint), deg_cor_hint)| {
-                        oracle.evaluate(point, g_eval, denom_inverse_hint, deg_cor_hint)
-                    })
-                    .collect_vec()
-            },
-        )
+        .map(|(points, g_eval_batch)| {
+            points
+                .into_iter()
+                .zip(g_eval_batch.into_iter())
+                .map(|(point, g_eval)| oracle.evaluate(point, g_eval, None, None))
+                .collect_vec()
+        })
         .collect_vec()
 }
 
@@ -661,8 +578,6 @@ fn compute_folded_evaluations<F: TwoAdicField>(
     c: F,
     omega: F,
 ) -> Vec<F> {
-    let point_roots_invs = batch_multiplicative_inverse(&point_roots);
-
     // This is called once per round and could be further amortised by passing
     // it as a hint, at the cost of a less clean interface of verify_round()
     let two_inv = F::TWO.inverse();
@@ -672,8 +587,7 @@ fn compute_folded_evaluations<F: TwoAdicField>(
     unfolded_evaluation_lists
         .into_iter()
         .zip(point_roots.iter())
-        .zip(point_roots_invs.into_iter())
-        .map(|((evals, &point_root), point_root_inv)| {
+        .map(|(evals, &point_root)| {
             fold_evaluations(
                 evals,
                 point_root,
@@ -681,7 +595,7 @@ fn compute_folded_evaluations<F: TwoAdicField>(
                 omega,
                 c,
                 Some(omega_inv),
-                Some(point_root_inv),
+                None,
                 Some(two_inv),
             )
         })
