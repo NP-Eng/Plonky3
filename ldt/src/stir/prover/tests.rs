@@ -3,18 +3,18 @@ use alloc::vec::Vec;
 use itertools::Itertools;
 use p3_challenger::MockChallenger;
 use p3_field::coset::TwoAdicMultiplicativeCoset;
-use p3_field::{eval_poly, TwoAdicField};
+use p3_field::{TwoAdicField, eval_poly};
 use rand::rngs::SmallRng;
 use rand::{Rng, SeedableRng};
 
 use super::RoundConfig;
+use crate::SecurityAssumption;
 use crate::prover::{commit_polynomial, prove};
 use crate::test_utils::*;
 use crate::utils::{
     divide_poly_with_remainder, fold_polynomial, lagrange_interpolation, mul_polys,
     power_polynomial, subtract_polys, vanishing_polynomial,
 };
-use crate::SecurityAssumption;
 
 #[test]
 // Checks that prove runs from beginning to end and performs a degree check on

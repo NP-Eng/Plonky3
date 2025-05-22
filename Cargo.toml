@@ -13,12 +13,12 @@ members = [
     "examples",
     "field",
     "field-testing",
-    "fri",
     "goldilocks",
     "interpolation",
     "koala-bear",
     "keccak",
     "keccak-air",
+    "ldt",
     "matrix",
     "merkle-tree",
     "maybe-rayon",
@@ -30,7 +30,6 @@ members = [
     "poseidon2-air",
     "rescue",
     "sha256",
-    "stir",
     "symmetric",
     "util",
     "uni-stark",
@@ -79,12 +78,12 @@ p3-dft = { path = "dft", version = "0.1.0" }
 p3-examples = { path = "examples", version = "0.1.0" }
 p3-field = { path = "field", version = "0.1.0" }
 p3-field-testing = { path = "field-testing", version = "0.1.0" }
-p3-fri = { path = "fri", version = "0.1.0" }
 p3-goldilocks = { path = "goldilocks", version = "0.1.0" }
 p3-interpolation = { path = "interpolation", version = "0.1.0" }
 p3-keccak = { path = "keccak", version = "0.1.0" }
 p3-keccak-air = { path = "keccak-air", version = "0.1.0" }
 p3-koala-bear = { path = "koala-bear", version = "0.1.0" }
+p3-ldt = { path = "ldt", version = "0.1.0" }
 p3-matrix = { path = "matrix", version = "0.1.0" }
 p3-maybe-rayon = { path = "maybe-rayon", version = "0.1.0" }
 p3-mds = { path = "mds", version = "0.1.0" }

@@ -7,8 +7,8 @@ use p3_challenger::FieldChallenger;
 use p3_dft::Radix2Dit;
 use p3_field::{Field, TwoAdicField};
 
-use crate::utils::{compute_pow, observe_usize_slice};
-use crate::SecurityAssumption;
+use crate::stir::SecurityAssumption;
+use crate::stir::utils::{compute_pow, observe_usize_slice};
 
 #[cfg(test)]
 mod tests;

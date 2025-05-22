@@ -3,15 +3,15 @@ use alloc::vec::Vec;
 use p3_baby_bear::{BabyBear, Poseidon2BabyBear};
 use p3_challenger::DuplexChallenger;
 use p3_commit::ExtensionMmcs;
-use p3_field::extension::BinomialExtensionField;
 use p3_field::Field;
+use p3_field::extension::BinomialExtensionField;
 use p3_goldilocks::{Goldilocks, Poseidon2Goldilocks};
 use p3_merkle_tree::MerkleTreeMmcs;
 use p3_symmetric::{PaddingFreeSponge, TruncatedPermutation};
 use rand::{
+    Rng, SeedableRng,
     distr::{Distribution, StandardUniform},
     rngs::SmallRng,
-    Rng, SeedableRng,
 };
 
 use crate::{SecurityAssumption, StirConfig, StirParameters};
@@ -212,8 +212,8 @@ pub fn rand_poly_coeffs_seeded<F: Field>(degree: usize, seed: Option<u64>) -> Ve
 where
     StandardUniform: Distribution<F>,
 {
-    use rand::rngs::SmallRng;
     use rand::SeedableRng;
+    use rand::rngs::SmallRng;
 
     let mut rng = SmallRng::seed_from_u64(seed.unwrap_or(42));
 

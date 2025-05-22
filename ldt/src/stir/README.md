@@ -21,7 +21,7 @@ This crate's usage workflow can be roughly outlined as follows:
 
 STIR can also be composed with other protocols, in which case the commitment from step 3 might have been produced elsewhere.
 
-A full end-to-end example could look as follows (note some of the methods therein require the `test-utils` feature):
+A full end-to-end example could look as follows (note some of the methods therein require the `stir-test-utils` feature):
 ```
     let log_degree = 15;
     let degree = 1 << log_degree - 1;
@@ -72,7 +72,7 @@ A benchmark is available which checks the performance of `commit`, `prove` and `
 
 ## Features
 
-The crate is `no_std`. It provides the feature `test-utils`, which exposes convenience methods to create MMCS configurations, challengers and STIR parameters for the two fields mentioned above. For an example of how these can be used, see the prover or verifier tests or the file `benches/stir.rs`.
+The crate is `no_std`. It provides the feature `stir-test-utils`, which exposes convenience methods to create MMCS configurations, challengers and STIR parameters for the two fields mentioned above. For an example of how these can be used, see the prover or verifier tests or the file `benches/stir.rs`.
 
 ## Implementation notes
 

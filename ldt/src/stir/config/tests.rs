@@ -2,11 +2,11 @@ use alloc::vec;
 
 use p3_baby_bear::{BabyBear, Poseidon2BabyBear};
 use p3_commit::ExtensionMmcs;
-use p3_field::extension::BinomialExtensionField;
 use p3_field::Field;
+use p3_field::extension::BinomialExtensionField;
 use p3_merkle_tree::MerkleTreeMmcs;
 use p3_symmetric::{PaddingFreeSponge, TruncatedPermutation};
-use rand::{rngs::SmallRng, SeedableRng};
+use rand::{SeedableRng, rngs::SmallRng};
 
 use crate::{SecurityAssumption, StirConfig, StirParameters};
 

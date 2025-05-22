@@ -18,8 +18,8 @@ use rand::Rng;
 use rand::distr::{Distribution, StandardUniform};
 use tracing::{info_span, instrument};
 
-use crate::verifier::FriError;
-use crate::{FriConfig, FriProof, TwoAdicFriPcs};
+use crate::fri::verifier::FriError;
+use crate::fri::{FriConfig, FriProof, TwoAdicFriPcs};
 
 /// A hiding FRI PCS. Both MMCSs must also be hiding; this is not enforced at compile time so it's
 /// the user's responsibility to configure.

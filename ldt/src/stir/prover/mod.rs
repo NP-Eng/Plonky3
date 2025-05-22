@@ -1,25 +1,25 @@
 use alloc::vec;
 use alloc::vec::Vec;
 
-use itertools::{izip, Itertools};
+use itertools::{Itertools, izip};
 use p3_challenger::{CanObserve, FieldChallenger, GrindingChallenger};
 use p3_commit::Mmcs;
 use p3_dft::TwoAdicSubgroupDft;
 use p3_field::coset::TwoAdicMultiplicativeCoset;
 use p3_field::{
-    batch_multiplicative_inverse, eval_packed_ext_poly, ExtensionField, Field,
-    PackedFieldExtension, PackedValue, TwoAdicField,
+    ExtensionField, Field, PackedFieldExtension, PackedValue, TwoAdicField,
+    batch_multiplicative_inverse, eval_packed_ext_poly,
 };
 use p3_matrix::dense::RowMajorMatrix;
 
-use crate::config::{observe_public_parameters, RoundConfig};
-use crate::proof::RoundProof;
-use crate::utils::{
+use crate::stir::config::{RoundConfig, observe_public_parameters};
+use crate::stir::proof::RoundProof;
+use crate::stir::utils::{
     add_polys, divide_by_vanishing_linear_polynomial, domain_dft, domain_idft,
     fold_evaluations_at_domain, lagrange_interpolation, observe_ext_slice_with_size,
     power_polynomial, vanishing_polynomial,
 };
-use crate::{Messages, StirConfig, StirProof, POW_BITS_WARNING};
+use crate::stir::{Messages, POW_BITS_WARNING, StirConfig, StirProof};
 
 #[cfg(test)]
 mod tests;

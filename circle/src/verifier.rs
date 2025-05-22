@@ -5,8 +5,8 @@ use itertools::Itertools;
 use p3_challenger::{CanObserve, FieldChallenger, GrindingChallenger};
 use p3_commit::{BatchOpeningRef, Mmcs};
 use p3_field::{ExtensionField, Field};
-use p3_fri::verifier::FriError;
-use p3_fri::{FriConfig, FriGenericConfig};
+use p3_ldt::fri::verifier::FriError;
+use p3_ldt::fri::{FriConfig, FriGenericConfig};
 use p3_matrix::Dimensions;
 use p3_util::zip_eq::zip_eq;
 

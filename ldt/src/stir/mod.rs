@@ -3,10 +3,6 @@
 //! [implementation](https://github.com/WizardOfMenlo/stir) by the co-author
 //! Giacomo Fenzi.
 
-#![no_std]
-
-extern crate alloc;
-
 mod config;
 mod proof;
 mod prover;

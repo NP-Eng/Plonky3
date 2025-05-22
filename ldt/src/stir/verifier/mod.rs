@@ -2,17 +2,17 @@ use alloc::vec;
 use alloc::vec::Vec;
 
 use error::{FullRoundVerificationError, VerificationError};
-use itertools::{iterate, Itertools};
+use itertools::{Itertools, iterate};
 use p3_challenger::{CanObserve, FieldChallenger, GrindingChallenger};
 use p3_commit::{BatchOpeningRef, Mmcs};
 use p3_field::coset::TwoAdicMultiplicativeCoset;
-use p3_field::{batch_multiplicative_inverse, eval_poly, ExtensionField, Field, TwoAdicField};
+use p3_field::{ExtensionField, Field, TwoAdicField, batch_multiplicative_inverse, eval_poly};
 use p3_matrix::Dimensions;
 
-use crate::config::{observe_public_parameters, RoundConfig};
-use crate::proof::RoundProof;
-use crate::utils::{fold_evaluations_at_small_domain, observe_ext_slice_with_size};
-use crate::{Messages, StirConfig, StirProof, POW_BITS_WARNING};
+use crate::stir::config::{RoundConfig, observe_public_parameters};
+use crate::stir::proof::RoundProof;
+use crate::stir::utils::{fold_evaluations_at_small_domain, observe_ext_slice_with_size};
+use crate::stir::{Messages, POW_BITS_WARNING, StirConfig, StirProof};
 
 mod error;
 

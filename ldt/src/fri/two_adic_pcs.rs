@@ -23,8 +23,8 @@ use p3_util::zip_eq::zip_eq;
 use p3_util::{log2_strict_usize, reverse_bits_len, reverse_slice_index_bits};
 use tracing::{info_span, instrument};
 
-use crate::verifier::{self, FriError};
-use crate::{FriConfig, FriGenericConfig, FriProof, prover};
+use crate::fri::verifier::FriError;
+use crate::fri::{FriConfig, FriGenericConfig, FriProof, prover, verifier};
 
 #[derive(Debug)]
 pub struct TwoAdicFriPcs<Val, Dft, InputMmcs, FriMmcs> {

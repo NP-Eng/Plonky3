@@ -8,8 +8,8 @@ use p3_challenger::{DuplexChallenger, HashChallenger, SerializingChallenger32};
 use p3_circle::CirclePcs;
 use p3_commit::ExtensionMmcs;
 use p3_field::Field;
-use p3_fri::TwoAdicFriPcs;
 use p3_keccak::{Keccak256Hash, KeccakF};
+use p3_ldt::fri::TwoAdicFriPcs;
 use p3_merkle_tree::MerkleTreeMmcs;
 use p3_symmetric::{
     CompressionFunctionFromHasher, PaddingFreeSponge, SerializingHasher, TruncatedPermutation,

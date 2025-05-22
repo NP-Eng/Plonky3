@@ -7,7 +7,7 @@ use p3_commit::ExtensionMmcs;
 use p3_dft::{Radix2Dit, TwoAdicSubgroupDft};
 use p3_field::extension::BinomialExtensionField;
 use p3_field::{Field, PrimeCharacteristicRing};
-use p3_fri::{FriConfig, TwoAdicFriGenericConfig, prover, verifier};
+use p3_ldt::fri::{FriConfig, TwoAdicFriGenericConfig, prover, verifier};
 use p3_matrix::Matrix;
 use p3_matrix::dense::RowMajorMatrix;
 use p3_matrix::util::reverse_matrix_index_bits;

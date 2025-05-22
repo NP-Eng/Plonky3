@@ -11,7 +11,7 @@ use p3_matrix::dense::RowMajorMatrix;
 use p3_util::{log2_strict_usize, reverse_slice_index_bits};
 use tracing::{debug_span, info_span, instrument};
 
-use crate::{CommitPhaseProofStep, FriConfig, FriGenericConfig, FriProof, QueryProof};
+use crate::fri::{CommitPhaseProofStep, FriConfig, FriGenericConfig, FriProof, QueryProof};
 
 #[instrument(name = "FRI prover", skip_all)]
 pub fn prove<G, Val, Challenge, M, Challenger>(

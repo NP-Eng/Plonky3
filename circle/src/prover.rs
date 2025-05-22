@@ -6,7 +6,7 @@ use itertools::{Itertools, izip};
 use p3_challenger::{CanObserve, FieldChallenger, GrindingChallenger};
 use p3_commit::Mmcs;
 use p3_field::{ExtensionField, Field};
-use p3_fri::{FriConfig, FriGenericConfig};
+use p3_ldt::fri::{FriConfig, FriGenericConfig};
 use p3_matrix::dense::RowMajorMatrix;
 use p3_util::log2_strict_usize;
 use tracing::{info_span, instrument};

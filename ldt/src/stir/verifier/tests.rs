@@ -6,13 +6,13 @@ use itertools::Itertools;
 use p3_challenger::{CanObserve, CanSampleBits, FieldChallenger, GrindingChallenger};
 use p3_commit::Mmcs;
 use p3_field::coset::TwoAdicMultiplicativeCoset;
-use p3_field::{eval_poly, PrimeCharacteristicRing, TwoAdicField};
+use p3_field::{PrimeCharacteristicRing, TwoAdicField, eval_poly};
 use p3_symmetric::Hash;
 use rand::rngs::SmallRng;
 use rand::{Rng, SeedableRng};
 
 use crate::config::observe_public_parameters;
-use crate::prover::{commit_polynomial, prove, prove_round, StirRoundWitness};
+use crate::prover::{StirRoundWitness, commit_polynomial, prove, prove_round};
 use crate::test_utils::*;
 use crate::utils::{fold_polynomial, observe_ext_slice_with_size};
 use crate::verifier::error::{FullRoundVerificationError, VerificationError};
@@ -244,10 +244,12 @@ fn test_compute_folded_evals() {
 
     let domain = TwoAdicMultiplicativeCoset::new(root, log_arity).unwrap();
 
-    let evaluations = vec![domain
-        .iter()
-        .map(|x| eval_poly(&polynomial, x))
-        .collect_vec()];
+    let evaluations = vec![
+        domain
+            .iter()
+            .map(|x| eval_poly(&polynomial, x))
+            .collect_vec(),
+    ];
 
     let folded_eval = compute_folded_evaluations(
         evaluations,
@@ -385,13 +387,15 @@ fn test_serialize_deserialize_proof() {
     let serialized_proof = serde_json::to_string(&proof).unwrap();
     let deserialized_proof: BBProof = serde_json::from_str(&serialized_proof).unwrap();
 
-    assert!(verify(
-        &config,
-        commitment,
-        deserialized_proof,
-        &mut test_bb_challenger()
-    )
-    .is_ok());
+    assert!(
+        verify(
+            &config,
+            commitment,
+            deserialized_proof,
+            &mut test_bb_challenger()
+        )
+        .is_ok()
+    );
 }
 
 #[test]

@@ -4,12 +4,12 @@ use core::cmp::Ordering;
 #[cfg(test)]
 use core::iter;
 
-use itertools::{iterate, Itertools};
+use itertools::{Itertools, iterate};
 use p3_challenger::{CanObserve, FieldChallenger};
 use p3_dft::{Radix2Dit, TwoAdicSubgroupDft};
 use p3_field::{
-    batch_multiplicative_inverse, coset::TwoAdicMultiplicativeCoset, eval_poly, ExtensionField,
-    Field, TwoAdicField,
+    ExtensionField, Field, TwoAdicField, batch_multiplicative_inverse,
+    coset::TwoAdicMultiplicativeCoset, eval_poly,
 };
 
 // Syntactic sugar for the proof-of-work computation
@@ -52,7 +52,7 @@ fn fold_evaluations_at_domain_inner<F: TwoAdicField>(
     // The evaluations of the original polynomial
     mut evals: Vec<F>,
     // The generator of the domain's subgroup
-    mut gen: F,
+    mut generator: F,
     // The log2 of the folding factor
     mut log_folding_factor: usize,
     // The folding coefficient
@@ -85,7 +85,7 @@ fn fold_evaluations_at_domain_inner<F: TwoAdicField>(
         half_domain_invs.iter_mut().for_each(|inv| {
             *inv = inv.square();
         });
-        gen = gen.square();
+        generator = generator.square();
         c = c.square();
         log_folding_factor -= 1;
     }
@@ -513,8 +513,8 @@ mod tests {
 
     use iter::Iterator;
     use p3_baby_bear::BabyBear;
-    use p3_field::coset::TwoAdicMultiplicativeCoset;
     use p3_field::PrimeCharacteristicRing;
+    use p3_field::coset::TwoAdicMultiplicativeCoset;
     use rand::rngs::SmallRng;
     use rand::{Rng, SeedableRng};
 

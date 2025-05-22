@@ -1,10 +1,10 @@
-use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion};
+use criterion::{BenchmarkId, Criterion, criterion_group, criterion_main};
 use p3_poly::test_utils::rand_poly;
 use p3_stir::test_utils::{
-    test_bb_challenger, test_bb_stir_config, test_gl_challenger, test_gl_stir_config,
-    BB_EXT_SEC_LEVEL, GL_EXT_SEC_LEVEL,
+    BB_EXT_SEC_LEVEL, GL_EXT_SEC_LEVEL, test_bb_challenger, test_bb_stir_config,
+    test_gl_challenger, test_gl_stir_config,
 };
-use p3_stir::{commit, prove, verify, SecurityAssumption};
+use p3_stir::{SecurityAssumption, commit, prove, verify};
 
 const SAMPLES: usize = 10;
 const LOG_INV_RATE: usize = 1;
