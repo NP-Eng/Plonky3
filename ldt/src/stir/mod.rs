@@ -10,7 +10,7 @@ mod proximity_gaps;
 mod utils;
 mod verifier;
 
-#[cfg(any(test, feature = "test-utils"))]
+#[cfg(any(test, feature = "stir-test-utils"))]
 pub mod test_utils;
 
 pub use config::{StirConfig, StirParameters};

@@ -1,5 +1,5 @@
-use alloc::vec;
 use alloc::vec::Vec;
+use alloc::{collections::btree_set::BTreeSet, vec};
 use core::cmp::Ordering;
 #[cfg(test)]
 use core::iter;
@@ -11,6 +11,32 @@ use p3_field::{
     ExtensionField, Field, TwoAdicField, batch_multiplicative_inverse,
     coset::TwoAdicMultiplicativeCoset, eval_poly,
 };
+
+// Alternative to itertoos::unique, unavailable without std. This naive method
+// has quadrativ cost in vec.len(), but the basic operation (comparison) has a
+// minimal cost.
+pub(crate) fn remove_duplicates<'a, T: Eq + Copy + 'a>(
+    vec: impl IntoIterator<Item = &'a T>,
+) -> Vec<T> {
+    let mut v = Vec::new();
+
+    for i in vec {
+        if !v.contains(i) {
+            v.push(*i);
+        }
+    }
+
+    v
+}
+
+// Alternative to itertoos::unique, unavailable without std. This method uses
+// BTreeSet and is therefore only available for types that implement Ord.
+#[inline]
+pub(crate) fn remove_duplicates_ord<T: Eq + Copy + Ord>(
+    vec: impl IntoIterator<Item = T>,
+) -> Vec<T> {
+    BTreeSet::from_iter(vec).into_iter().collect()
+}
 
 // Syntactic sugar for the proof-of-work computation
 #[inline]
@@ -243,9 +269,9 @@ pub(crate) fn power_polynomial<F: Field>(r: F, degree: usize) -> Vec<F> {
 // Returns the vanishing polynomial at the given points, i. e. the product of (x
 // - p) as p runs over `points`. If the list contains duplicates of the same
 // point, only one is kept.
-pub(crate) fn vanishing_polynomial<F: Field>(points: impl IntoIterator<Item = F>) -> Vec<F> {
+pub(crate) fn vanishing_polynomial<F: Field>(points: &[F]) -> Vec<F> {
     // Deduplicating the points
-    let mut points = points.into_iter().unique().collect_vec();
+    let mut points = remove_duplicates(points);
 
     assert!(
         !points.is_empty(),
@@ -286,13 +312,9 @@ pub(crate) fn lagrange_interpolation<F: Field>(point_to_evals: Vec<(F, F)>) -> V
     }
 
     // Testing for consistency and removing duplicate points
-    let point_to_evals = point_to_evals.into_iter().unique().collect_vec();
+    let point_to_evals = remove_duplicates(&point_to_evals);
 
-    let points = point_to_evals
-        .iter()
-        .map(|(x, _)| *x)
-        .unique()
-        .collect_vec();
+    let points = remove_duplicates(point_to_evals.iter().map(|(x, _)| x));
 
     assert_eq!(
         points.len(),
@@ -300,7 +322,7 @@ pub(crate) fn lagrange_interpolation<F: Field>(point_to_evals: Vec<(F, F)>) -> V
         "One point has two different requested evaluations"
     );
 
-    let vanishing_poly = vanishing_polynomial(points);
+    let vanishing_poly = vanishing_polynomial(&points);
 
     let mut result = vec![];
 
@@ -518,7 +540,7 @@ mod tests {
     use rand::rngs::SmallRng;
     use rand::{Rng, SeedableRng};
 
-    use crate::test_utils::rand_poly_coeffs;
+    use crate::stir::test_utils::rand_poly_coeffs;
 
     use super::*;
 

@@ -11,13 +11,13 @@ use p3_symmetric::Hash;
 use rand::rngs::SmallRng;
 use rand::{Rng, SeedableRng};
 
-use crate::config::observe_public_parameters;
-use crate::prover::{StirRoundWitness, commit_polynomial, prove, prove_round};
-use crate::test_utils::*;
-use crate::utils::{fold_polynomial, observe_ext_slice_with_size};
-use crate::verifier::error::{FullRoundVerificationError, VerificationError};
-use crate::verifier::{compute_folded_evaluations, verify};
-use crate::{Messages, SecurityAssumption, StirConfig, StirProof};
+use crate::stir::config::observe_public_parameters;
+use crate::stir::prover::{StirRoundWitness, commit_polynomial, prove, prove_round};
+use crate::stir::test_utils::*;
+use crate::stir::utils::{fold_polynomial, observe_ext_slice_with_size, remove_duplicates_ord};
+use crate::stir::verifier::error::{FullRoundVerificationError, VerificationError};
+use crate::stir::verifier::{compute_folded_evaluations, verify};
+use crate::stir::{Messages, SecurityAssumption, StirConfig, StirProof};
 
 type BBProof = StirProof<BbExt, BbExtMmcs, Bb>;
 type GLProof = StirProof<GlExt, GlExtMmcs, Gl>;
@@ -194,10 +194,9 @@ fn tamper_with_final_polynomial(
 
     // Sample the queried indices
     challenger.observe(Bb::from_u8(Messages::FinalQueryIndices as u8));
-    let queried_indices: Vec<u64> = (0..final_queries)
-        .map(|_| challenger.sample_bits(log_query_domain_size) as u64)
-        .unique()
-        .collect();
+    let queried_indices: Vec<u64> = remove_duplicates_ord(
+        (0..final_queries).map(|_| challenger.sample_bits(log_query_domain_size) as u64),
+    );
 
     let queries_to_final: Vec<(Vec<BbExt>, _)> = queried_indices
         .into_iter()

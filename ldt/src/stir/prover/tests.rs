@@ -8,12 +8,12 @@ use rand::rngs::SmallRng;
 use rand::{Rng, SeedableRng};
 
 use super::RoundConfig;
-use crate::SecurityAssumption;
-use crate::prover::{commit_polynomial, prove};
-use crate::test_utils::*;
-use crate::utils::{
+use crate::stir::SecurityAssumption;
+use crate::stir::prover::{commit_polynomial, prove};
+use crate::stir::test_utils::*;
+use crate::stir::utils::{
     divide_poly_with_remainder, fold_polynomial, lagrange_interpolation, mul_polys,
-    power_polynomial, subtract_polys, vanishing_polynomial,
+    power_polynomial, remove_duplicates, subtract_polys, vanishing_polynomial,
 };
 
 #[test]
@@ -175,8 +175,9 @@ fn test_prove_final_polynomial() {
 
         let quotient_set = stir_randomness
             .chain(round_ood_replies[round - 1].clone().into_iter())
-            .unique()
             .collect_vec();
+
+        let quotient_set = remove_duplicates(quotient_set.iter());
 
         let quotient_set_points = quotient_set
             .iter()
@@ -187,7 +188,7 @@ fn test_prove_final_polynomial() {
 
         let (quotient_polynomial, remainder) = divide_poly_with_remainder(
             subtract_polys(&g_i, &ans_polynomial),
-            vanishing_polynomial(quotient_set.clone()),
+            vanishing_polynomial(&quotient_set),
         );
 
         assert!(remainder.is_empty());

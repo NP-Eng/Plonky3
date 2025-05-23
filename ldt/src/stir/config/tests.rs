@@ -8,7 +8,7 @@ use p3_merkle_tree::MerkleTreeMmcs;
 use p3_symmetric::{PaddingFreeSponge, TruncatedPermutation};
 use rand::{SeedableRng, rngs::SmallRng};
 
-use crate::{SecurityAssumption, StirConfig, StirParameters};
+use crate::stir::{SecurityAssumption, StirConfig, StirParameters};
 
 type Bb = BabyBear;
 type BbExt = BinomialExtensionField<Bb, 4>;

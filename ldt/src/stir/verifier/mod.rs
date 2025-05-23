@@ -14,6 +14,8 @@ use crate::stir::proof::RoundProof;
 use crate::stir::utils::{fold_evaluations_at_small_domain, observe_ext_slice_with_size};
 use crate::stir::{Messages, POW_BITS_WARNING, StirConfig, StirProof};
 
+use super::utils::{remove_duplicates, remove_duplicates_ord};
+
 mod error;
 
 #[cfg(test)]
@@ -254,18 +256,14 @@ where
 
     // Sample the final queried indices
     challenger.observe(F::from_u8(Messages::FinalQueryIndices as u8));
-    let final_queried_indices: Vec<usize> = (0..config.final_num_queries())
-        .map(|_| challenger.sample_bits(log_final_query_domain_size))
-        .unique()
-        .collect();
+    let final_queried_indices: Vec<usize> = remove_duplicates_ord(
+        (0..config.final_num_queries())
+            .map(|_| challenger.sample_bits(log_final_query_domain_size)),
+    );
 
     // Verifying paths of the evaluations of g_M at the k_M-th roots of the
     // final queried points
-    for (&i, (leaf, proof)) in final_queried_indices
-        .iter()
-        .unique()
-        .zip(final_round_queries.iter())
-    {
+    for (&i, (leaf, proof)) in final_queried_indices.iter().zip(final_round_queries.iter()) {
         let leaf_vec = vec![leaf.clone()];
         let batch_proof = BatchOpeningRef::new(&leaf_vec, proof);
 
@@ -411,6 +409,8 @@ where
         }
     }
 
+    let ood_samples = remove_duplicates(ood_samples.iter());
+
     // Observe the betas, i. e. the replies to the out-of-domain queries
     challenger.observe(F::from_u8(Messages::Betas as u8));
     betas
@@ -429,10 +429,9 @@ where
     let log_query_domain_size = domain.log_size() - log_folding_factor;
 
     challenger.observe(F::from_u8(Messages::QueryIndices as u8));
-    let queried_indices: Vec<usize> = (0..num_queries)
-        .map(|_| challenger.sample_bits(log_query_domain_size))
-        .unique()
-        .collect();
+    let queried_indices: Vec<usize> = remove_duplicates_ord(
+        (0..num_queries).map(|_| challenger.sample_bits(log_query_domain_size)),
+    );
 
     // Check the proof of work for this round
     if !challenger.check_witness(pow_bits, pow_witness) {
@@ -451,7 +450,7 @@ where
     let shake_randomness: EF = challenger.sample_algebra_element();
 
     // Verify the Merkle proofs of the evaluations of g_{i - 1}
-    for (&i, (leaf, proof)) in queried_indices.iter().unique().zip(query_proofs.iter()) {
+    for (&i, (leaf, proof)) in queried_indices.iter().zip(query_proofs.iter()) {
         let leaf_vec = vec![leaf.clone()];
         let batch_proof = BatchOpeningRef::new(&leaf_vec, proof);
 

@@ -21,6 +21,8 @@ use crate::stir::utils::{
 };
 use crate::stir::{Messages, POW_BITS_WARNING, StirConfig, StirProof};
 
+use super::utils::{remove_duplicates, remove_duplicates_ord};
+
 #[cfg(test)]
 mod tests;
 
@@ -274,10 +276,9 @@ where
 
     // Sample the indices to query verify the folding of f_M into g_{M + 1} at
     challenger.observe(F::from_u8(Messages::FinalQueryIndices as u8));
-    let queried_indices: Vec<u64> = (0..final_queries)
-        .map(|_| challenger.sample_bits(log_query_domain_size) as u64)
-        .unique()
-        .collect();
+    let queried_indices: Vec<u64> = remove_duplicates_ord(
+        (0..final_queries).map(|_| challenger.sample_bits(log_query_domain_size) as u64),
+    );
 
     // Opening the cosets of evaluations of g_M at each k_M-th root of the
     // points queried
@@ -403,6 +404,8 @@ where
         }
     }
 
+    let ood_samples = remove_duplicates(ood_samples.iter());
+
     // Evaluate the polynomial at the out-of-domain sampled points
     let betas: Vec<EF> = ood_samples
         .iter()
@@ -429,10 +432,9 @@ where
     let log_query_domain_size = domain_l.log_size() - log_folding_factor;
 
     challenger.observe(F::from_u8(Messages::QueryIndices as u8));
-    let queried_indices: Vec<usize> = (0..num_queries)
-        .map(|_| challenger.sample_bits(log_query_domain_size))
-        .unique()
-        .collect();
+    let queried_indices: Vec<usize> = remove_duplicates_ord(
+        (0..num_queries).map(|_| challenger.sample_bits(log_query_domain_size)),
+    );
 
     // Compute the proof-of-work for the current round
     let pow_witness = challenger.grind(pow_bits);
@@ -471,7 +473,7 @@ where
 
     // stir_answers has been dedup-ed but beta_answers has not yet:
     let stir_answers = stir_randomness.into_iter().zip(stir_randomness_evals);
-    let beta_answers = ood_samples.into_iter().zip(betas.clone()).unique();
+    let beta_answers = ood_samples.into_iter().zip(betas.clone());
     let quotient_answers = beta_answers.chain(stir_answers).collect_vec();
 
     // Compute the quotient set, \mathcal{G}_i in the notation of the article
@@ -503,7 +505,7 @@ where
     }
 
     let mut power_polynomial = power_polynomial(comb_randomness, quotient_set_size);
-    let mut vanishing_polynomial = vanishing_polynomial(quotient_set);
+    let mut vanishing_polynomial = vanishing_polynomial(&quotient_set);
 
     let mut resized_ans_polynomial = ans_polynomial.clone();
 

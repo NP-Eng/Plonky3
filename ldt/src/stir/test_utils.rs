@@ -14,7 +14,7 @@ use rand::{
     rngs::SmallRng,
 };
 
-use crate::{SecurityAssumption, StirConfig, StirParameters};
+use crate::stir::{SecurityAssumption, StirConfig, StirParameters};
 
 // Security levels used in the tests in bits.
 
